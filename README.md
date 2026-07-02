@@ -6,6 +6,12 @@ Built with the [MCP Python SDK](https://github.com/modelcontextprotocol/python-s
 
 ---
 
+## Related project: Quantum Chemistry VQE
+
+Built on top of this MCP server: **[Quantum Chemistry VQE](https://github.com/Venkatallu11/quantum-chemistry-vqe)** — a pure-Python toolkit that computes the exact ground-state energy of molecules from geometry (verified against PySCF), including a many-body-expansion engine for larger clusters. It uses this MCP server as the bridge to run molecules on real IBM Quantum hardware. Built by [Venkata Rao Allu](https://github.com/Venkatallu11).
+
+---
+
 ## Why researchers should care
 
 Running quantum experiments is expensive in two ways: **time** (queue wait) and **quality** (gate errors corrupt results). This server exposes both dimensions as AI-queryable tools, so you can ask natural questions and get grounded answers:
