@@ -24,6 +24,41 @@ Condition 3 is the dangerous one: there is no second attempt. So this task runs 
 exact production code path end to end on simulators first, so that the only difference
 between the rehearsal and the real run is the backend string.
 
+## Phase 0 — Pin qiskit-ionq to `main`, not v1.1.1
+
+Do this before anything else, and do it in the same environment that will later make the
+real submission.
+
+Two bugs we reported in August are **fixed on `main` but not in any tagged release**:
+
+- multi-circuit result parsing
+- histogram scaling
+
+Both were merged in https://github.com/qiskit-community/qiskit-ionq/pull/273 on
+September 2. The latest tagged release is still **v1.1.1 and does not contain them**.
+Vadim's words: *"installing from `main` gives you the fixed behavior."*
+
+This is not optional. The funded run submits **81 circuits in one job** and allows **no
+resubmission**. Parsing that job's results with the broken multi-circuit parser, or
+scaling its histograms with the broken scaler, would corrupt the only dataset we get.
+
+Steps:
+
+1. `pip uninstall -y qiskit-ionq`
+2. `pip install "git+https://github.com/qiskit-community/qiskit-ionq.git@main"`
+3. Print the installed version **and** the resolved git commit SHA. Record both in the
+   report.
+4. Assert the installed package is **not** v1.1.1 from PyPI. If it is, stop — every
+   number produced after that point is suspect.
+5. Re-run the project's own test suite against the newly installed SDK before building
+   any circuits. A different SDK version is a different dependency; do not assume our
+   code still passes against it. Fix any breakage before continuing.
+
+Note also that `JobEstimate.cost` is still broken even on `main` (it reads
+`estimated_cost`; the API returns `estimated_total_cost`), so read the cost out of the
+raw response as Phase 2 instructs. A fix for this is in review as a pull request, but do
+not assume it is merged — check, and if it is not, use the raw response.
+
 ## Phase 1 — Build the 81-circuit payload with the production code path
 
 - Use the committed 84-circuit design (4 GC groups x 21 slots). 81 are new; 3 are reused
@@ -95,6 +130,7 @@ forte-1 counts and confirming it produces the Phase 3 numbers with no edits.
 
 Then write `task33/REHEARSAL_REPORT.md` containing:
 
+- the installed qiskit-ionq version and git commit SHA from Phase 0, stated at the top
 - the 81-circuit gate-count table and totals
 - both cost estimates (debiasing off and on) against our rate-card model
 - the three estimators x three backends table with bootstrap CIs and chi2/dof
@@ -106,6 +142,8 @@ Then write `task33/REHEARSAL_REPORT.md` containing:
 
 Print a final summary and stop. State explicitly:
 
+- the qiskit-ionq commit the whole rehearsal ran against, and confirmation it is not
+  v1.1.1
 - whether all four of Vadim's conditions are mechanically enforced in code
 - what the frame-free estimator is actually expected to do on hardware, honestly
 - whether the word "passing" is confined to the shared-frame estimator everywhere in
