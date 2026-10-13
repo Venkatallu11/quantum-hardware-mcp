@@ -38,9 +38,10 @@ provider = IonQProvider()                      # IONQ_API_KEY in env
 backend  = provider.get_backend("qpu.forte-1")
 
 est = backend.client.estimate_job(
-    backend_name="qpu.forte-1",
+    backend="qpu.forte-1",
+    oneq_gates=285,
+    twoq_gates=11,
     qubits=8,
-    gate_counts={"1q": 285, "2q": 11},
     shots=1100,
 )
 
