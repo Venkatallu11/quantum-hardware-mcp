@@ -53,7 +53,3 @@ The value is in the payload the whole time, under a different key. Reading `esti
 One thing worth a maintainer's eye: I confirmed the client half directly against `ionq_client.py:511`, but my evidence for the server returning `estimated_total_cost` is observed API responses rather than the API spec. If the canonical field name is something else, the fallback ordering should change accordingly.
 
 Found while budgeting a funded H4 quantum-chemistry run on Forte Enterprise 1 under the IonQ Research Credits Program. Reported at the suggestion of Vadim Karpusenko (IonQ DevRel).
-
-🤖 Generated with [Claude Code](https://claude.com/claude-code)
-
-https://claude.ai/code/session_01JX7Yp28x6ymu1vp57T9KuK
